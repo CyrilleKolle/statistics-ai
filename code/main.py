@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import f, norm, ttest_ind
 from statsmodels.stats.weightstats import ttest_ind as it, DescrStatsW, CompareMeans
+import seaborn as sns
 
 df1 = pd.read_csv("../dataset/iris.csv")
 
@@ -140,3 +141,31 @@ class Statistics_ai:
         print(
             f"\n\n using the statsmodel compare means, I can conclude that, using 0.05 significance level, {noll_df}[{sub_df}] is greater than {other_df}[{sub_df}] by a value found with get the lower ci: {lower} and upper ci {upper}"
         )
+
+    def correlation_within_specy(self,df, sub_df_1):
+        df = self._df_list[df]
+        
+        sns.lmplot(data=df, x=self._test, y=sub_df_1)
+        plt.show()
+        
+    def correlation_heat_map(self, df):
+        df = self._df_list[df]
+        
+        corr = df.corr()
+        mask = np.triu(np.ones_like(corr, dtype=bool))
+
+        # Set up the matplotlib figure
+        f, ax = plt.subplots(figsize=(4, 4))
+
+        # Generate a custom diverging colormap
+        cmap = sns.diverging_palette(230, 20, as_cmap=True)
+
+        # Draw the heatmap with the mask and correct aspect ratio
+        sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0, annot=True,
+                    square=True, linewidths=.5, cbar_kws={"shrink": .5})
+        
+    def diagrams(self, df, sub_df):
+        df = self._df_list[df]
+        g = sns.FacetGrid(df, col=self._test, hue=sub_df)
+        g.map(sns.scatterplot, "sepal_width", "sepal_length", alpha=.7)
+        g.add_legend()
