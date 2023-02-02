@@ -236,11 +236,13 @@ class Statistics_ai:
         """
         
         df = self._df_list[df]
-        xs = pd.DataFrame(np.linspace(0, 5, 50), columns=[self._test])
         
         
+        # the first prediction model will be used to plot or draw the upper and lower limits
+        # of my prediction intervall 
+        points = pd.DataFrame(np.linspace(0, 5, 50), columns=[self._test])
         model = ols(f"{sub_df} ~ {self._test}", data=df).fit()
-        predictions = model.get_prediction(xs)
+        predictions = model.get_prediction(points)
         frame = predictions.summary_frame(alpha=0.05)
         
         lower = frame["obs_ci_lower"]
@@ -250,14 +252,19 @@ class Statistics_ai:
 
         sns.scatterplot(data=df, x=self._test, y=sub_df)
 
-        # Prediction interval in the sample prediction
+        
         predictions1 = model.get_prediction(df[self._test])
         frame1 = predictions1.summary_frame(alpha=0.05)
         ypred = frame1["mean"]
 
         ax.plot(df[self._test], ypred, "r", label="OLS prediction")
 
-        ax.plot(xs, lower, "r--", label="lower prediction limit", linewidth=0.75)
-        ax.plot(xs, upper, "r--", label="upper prediction limit", linewidth=0.95)
+        ax.plot(points, lower, "r--", label="lower prediction limit", linewidth=0.75)
+        ax.plot(points, upper, "r--", label="upper prediction limit", linewidth=0.95)
         ax.legend(loc="best")
+        plt.title('Out of sample regression prediction')
+        
+        # Use scipy stats to compute pearson correlation coefficient and display on plot
+        r, p = scs.pearsonr(x=df[self._test], y=df[sub_df])
+        plt.text(.85, 0.2, 'r={:.2f}'.format(r), transform=ax.transAxes)
         plt.show()
