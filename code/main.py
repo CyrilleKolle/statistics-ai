@@ -266,5 +266,5 @@ class Statistics_ai:
         
         # Use scipy stats to compute pearson correlation coefficient and display on plot
         r, p = scs.pearsonr(x=df[self._test], y=df[sub_df])
-        plt.text(.85, 0.2, 'r={:.2f}'.format(r), transform=ax.transAxes)
+        plt.text(.3, 0.8, 'r={:.2f}'.format(r), transform=ax.transAxes)
         plt.show()
