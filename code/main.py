@@ -239,7 +239,7 @@ class Statistics_ai:
 
         # the first prediction model will be used to plot or draw the upper and lower limits
         # of my prediction intervall
-        points = pd.DataFrame(np.linspace(0, 5, 5), columns=[self._test])
+        points = pd.DataFrame(np.linspace(0, 1, 5), columns=[self._test])
         model = ols(f"{sub_df} ~ {self._test}", data=df).fit()
         predictions = model.get_prediction(points)
         frame = predictions.summary_frame(alpha=0.05)
@@ -267,8 +267,6 @@ class Statistics_ai:
             marker="s",
             label="OLS Prediction test points",
         )
-
-        print(points.head())
 
         ax.plot(df[self._test], ypred, "r", label="OLS prediction")
 
